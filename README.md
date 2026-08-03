@@ -6,7 +6,9 @@
 
 Generate a polished, self-contained report for one Cline account from the authenticated Cline API. The command collects the account's complete history, preserves the raw API units alongside normalized dollar values, and writes HTML, JSON, CSV, SVG, and PNG artifacts.
 
-![Demo](https://i.postimg.cc/7hSHQ0mh/image.png)
+![Demo summary](https://i.postimg.cc/bN2kpBV4/summary.png)
+![Demo chart](https://i.postimg.cc/pXnzR61M/chart.png)
+![Demo details](https://i.postimg.cc/BQ1H4VwG/details.png)
 
 </div>
 
