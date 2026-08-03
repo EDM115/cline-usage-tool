@@ -1,12 +1,20 @@
+<div align="center">
+
 # Cline usage tool
 
+![Cline logo](https://raw.githubusercontent.com/cline/cline/refs/heads/main/assets/icons/icon.png)
+
 Generate a polished, self-contained report for one Cline account from the authenticated Cline API. The command collects the account's complete history, preserves the raw API units alongside normalized dollar values, and writes HTML, JSON, CSV, SVG, and PNG artifacts.
+
+![Demo](https://i.postimg.cc/7hSHQ0mh/image.png)
+
+</div>
 
 ## Requirements
 
 - Bun 1.3 or newer
-- A Cline API key from [app.cline.bot](https://app.cline.bot) → Settings → API Keys
-- Your Cline user ID, such as `usr-01EXAMPLE`
+- A Cline API key from [app.cline.bot](https://app.cline.bot/dashboard) → Account → API Keys
+- Your Cline user ID, such as `usr-01EXAMPLE` (if you authenticated using the Cline CLI/VS Code extension, you can find it in `~/.cline/data/secrets.json`, otherwise make sure you're logged in your browser and visit https://api.cline.bot/api/v1/users/me)
 
 ## Install
 
@@ -14,17 +22,18 @@ Generate a polished, self-contained report for one Cline account from the authen
 bun install --frozen-lockfile
 ```
 
+Edit the `.env` file to set `CLINE_API_KEY` and `CLINE_USER_ID`.
+
 ## Run
 
 ```pwsh
-$env:CLINE_API_KEY = "your-api-key"
-bun usage usr-01EXAMPLE
+bun usage
 ```
 
-Choose another output directory when needed:
+Choose another output directory when needed :
 
 ```pwsh
-bun usage usr-01EXAMPLE --out .\reports\cline
+bun usage --out ./reports/cline
 ```
 
 The API key is read only from `CLINE_API_KEY`. It is sent in the `Authorization: Bearer …` request header and is never written to an artifact or printed by the CLI.
@@ -37,7 +46,8 @@ The API key is read only from `CLINE_API_KEY`. It is sent in the `Authorization:
 - `/api/v1/users/me/plan/usage-limits` for five-hour, weekly, and monthly utilization
 - `/api/v1/users/{id}/usages` for cursor-paginated detailed request history
 - `/api/v1/users/{id}/usages/daily` for server-generated daily/model totals
-  The requested user ID must match `/users/me.id`. All history is collected from the account creation date through the current UTC date. Because the daily endpoint rejects ranges above 31 days, the CLI splits that history into consecutive inclusive windows of at most 31 days. Detailed-history pagination follows each response's `nextToken` by sending it back as the next request's `cursor`. Requests time out after 30 seconds and retry transient network, rate-limit, and server failures twice with bounded exponential backoff. A successful empty plan or usage-limit response is preserved as `null`, so accounts without an active ClinePass can still be reported.
+
+The requested user ID must match `/users/me.id`. All history is collected from the account creation date through the current UTC date. Because the daily endpoint rejects ranges above 31 days, the CLI splits that history into consecutive inclusive windows of at most 31 days. Detailed-history pagination follows each response's `nextToken` by sending it back as the next request's `cursor`. Requests time out after 30 seconds and retry transient network, rate-limit, and server failures twice with bounded exponential backoff. A successful empty plan or usage-limit response is preserved as `null`, so accounts without an active ClinePass can still be reported.
 
 ## Output files
 
@@ -56,7 +66,7 @@ The HTML embeds its data, CSS, and JavaScript and does not load third-party asse
 
 ## Understanding the money fields
 
-ClinePass and ordinary Cline usage-billing are separate:
+ClinePass and ordinary Cline usage-billing are separate :
 
 - `referenceCostUsd` is normalized from the API's integer `costUsd` field. It represents underlying/reference inference cost and can be nonzero for ClinePass requests.
 - `creditsUsedUsd` is normalized from `creditsUsed`. It represents actual pay-as-you-go credits consumed and is normally zero for ClinePass requests.
@@ -66,8 +76,8 @@ ClinePass and ordinary Cline usage-billing are separate:
 ## Development
 
 ```pwsh
+bun typecheck
 bun test
-bun run typecheck
 ```
 
 Tests cover 31-day range boundaries, cursor pagination, null plan snapshots, transient retries, structured API errors, account-ID validation, legacy optional usage fields, unit normalization, aggregation, spreadsheet-safe CSV escaping, embedded-report safety, SVG/PNG rendering, and the complete CLI-to-output flow.
