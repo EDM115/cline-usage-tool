@@ -12,6 +12,9 @@ Generate a polished, self-contained report for one Cline account from the authen
 
 </div>
 
+> [!TIP]  
+> Using Codex ? Check out https://github.com/EDM115/codex-usage-tool !
+
 ## Requirements
 
 - Bun 1.3 or newer
