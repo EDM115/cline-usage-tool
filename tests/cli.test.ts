@@ -9,7 +9,8 @@ import { parseArgs, runCli } from "../src/cli";
 
 describe("parseArgs", () => {
   test("uses one positional user ID and a conventional output directory", () => {
-    expect(parseArgs(["usr-01EXAMPLE"])).toEqual({
+    expect(parseArgs(["usr-01EXAMPLE"], { CLINE_API_KEY: "sk_EXAMPLE" })).toEqual({
+      apiKey: "sk_EXAMPLE",
       userId: "usr-01EXAMPLE",
       outDir: "outputs/cline-usage",
       help: false,
@@ -17,18 +18,19 @@ describe("parseArgs", () => {
   });
 
   test("accepts only the output directory as an operational flag", () => {
-    expect(parseArgs(["usr-01EXAMPLE", "--out", "reports/cline"])).toEqual({
+    expect(parseArgs(["usr-01EXAMPLE", "--out", "reports/cline"], { CLINE_API_KEY: "sk_EXAMPLE" })).toEqual({
+      apiKey: "sk_EXAMPLE",
       userId: "usr-01EXAMPLE",
       outDir: "reports/cline",
       help: false,
     });
-    expect(() => parseArgs(["usr-01EXAMPLE", "--from", "2026-01-01"])).toThrow(
+    expect(() => parseArgs(["usr-01EXAMPLE", "--from", "2026-01-01"], { CLINE_API_KEY: "sk_EXAMPLE" })).toThrow(
       "Unknown option --from",
     );
   });
 
   test("rejects malformed Cline user IDs", () => {
-    expect(() => parseArgs(["example"])).toThrow("Expected a Cline user ID beginning with usr-");
+    expect(() => parseArgs(["example"], { CLINE_API_KEY: "sk_EXAMPLE" })).toThrow("Expected a Cline user ID beginning with usr-");
   });
 
   test("runs the complete collection and export path with the API key kept out of artifacts", async () => {

@@ -57,12 +57,6 @@ export function parseArgs(_args: string[], _environment: Record<string, string |
     help: false,
   };
 
-  options.apiKey = _environment.CLINE_API_KEY ?? null;
-
-  if (!options.apiKey) {
-    throw new Error("CLINE_API_KEY is required");
-  }
-
   for (let index = 0; index < _args.length; index += 1) {
     const argument = _args[index]!;
 
@@ -83,6 +77,12 @@ export function parseArgs(_args: string[], _environment: Record<string, string |
     } else {
       options.userId = argument;
     }
+  }
+
+  options.apiKey = _environment.CLINE_API_KEY ?? null;
+
+  if (!options.help && !options.apiKey) {
+    throw new Error("CLINE_API_KEY is required");
   }
 
   if (!options.userId) {
