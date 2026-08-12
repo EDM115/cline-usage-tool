@@ -9,6 +9,7 @@ import type {
 } from "./types";
 
 const MICRO_USD = 1_000_000;
+const REFERENCE_COST_USD_SCALE = 100_000_000;
 
 export function buildDataset(collected: CollectedAccountData): UsageDataset {
   const usages = collected.usages
@@ -81,7 +82,7 @@ function normalizeUsage(item: CollectedAccountData["usages"][number]): Normalize
     creditsUsedRaw: finiteNumberOrZero(item.creditsUsed),
     creditsUsedUsd: fromMicroUsd(finiteNumberOrZero(item.creditsUsed)),
     referenceCostRaw: finiteNumberOrZero(item.costUsd),
-    referenceCostUsd: fromMicroUsd(finiteNumberOrZero(item.costUsd)),
+    referenceCostUsd: fromReferenceCost(finiteNumberOrZero(item.costUsd)),
     generationId: item.generationId ?? "",
     metadata,
   };
@@ -160,13 +161,17 @@ function sumUsages(usages: NormalizedUsage[]): UsageSlice {
 
   return {
     ...raw,
-    referenceCostUsd: fromMicroUsd(raw.referenceCostRaw),
+    referenceCostUsd: fromReferenceCost(raw.referenceCostRaw),
     creditsUsedUsd: fromMicroUsd(raw.creditsUsedRaw),
   };
 }
 
 function fromMicroUsd(value: number): number {
   return value / MICRO_USD;
+}
+
+function fromReferenceCost(value: number): number {
+  return value / REFERENCE_COST_USD_SCALE;
 }
 
 function finiteNumberOrZero(value: unknown): number {
